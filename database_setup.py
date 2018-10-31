@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -22,6 +22,7 @@ class Item(Base):
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
     description = Column(String(1000))
+    time = Column(DateTime, default=func.now())
     category_name = Column(String, ForeignKey('category.name'))
     category = relationship(Category)
 
@@ -30,6 +31,7 @@ class Item(Base):
         return{
                 'name': self.name,
                 'description': self.description,
+                'time': self.time,
                 'id': self.id
                 }
 
