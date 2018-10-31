@@ -232,20 +232,164 @@ category5 = Category(name='Snowboarding')
 session.add(category5)
 session.commit()
 
+item19 = Item(
+        name='Snowboard',
+        description='''Snowboards are boards where both feet are secured to
+        the same board, which are wider than skis, with the ability to glide
+        on snow.''',
+        category=category5
+        )
+session.add(item19)
+session.commit()
+
+item20 = Item(
+        name='Ski Bindings',
+        description='''A ski binding is a device that connects a ski boot to
+        the ski. Generally, it holds the boot firmly to allow the skier to
+        maneuver the ski. However, if certain force limits are exceeded, it
+        releases the boot to minimize skier injury, such as in the case of a
+        fall or impact.''',
+        category=category5
+        )
+session.add(item20)
+session.commit()
+
+item21 = Item(
+        name='Snowboarding Hemlet',
+        description='''A ski helmet is a helmet specifically designed and
+        constructed for winter sports. Use was rare until about 2000, but by
+        about 2010 the great majority of skiers and snowboarders in the US
+        and Europe wear helmets.''',
+        category=category5
+        )
+session.add(item21)
+session.commit()
+
 category6 = Category(name='Rock Climbing')
 session.add(category6)
 session.commit()
 
-category7 = Category(name='Fooseball')
+item22 = Item(
+        name='Rope',
+        description='''A rope is a group of yarns, plies, fibers or strands
+        that are twisted or braided together into a larger and stronger form.
+        Ropes have tensile strength and so can be used for dragging and
+        lifting, but are too flexible to provide compressive strength.''',
+        category=category6
+        )
+session.add(item22)
+session.commit()
+
+item23 = Item(
+        name='Carabiners',
+        description='''A carabiner or karabiner is a specialized type of
+        shackle, a metal loop with a spring-loaded gate used to quickly and
+        reversibly connect components, most notably in safety-critical
+        systems.''',
+        category=category6
+        )
+session.add(item23)
+session.commit()
+
+item24 = Item(
+        name='Climbing Harnesses',
+        description='''A climbing harness is an item of climbing equipment
+        for rock-climbing, abseiling, or other activities requiring the use
+        of ropes to provide access or safety such as industrial rope access,
+        working at heights, etc. A harness secures a person to a rope or an
+        anchor point.''',
+        category=category6
+        )
+session.add(item24)
+session.commit()
+
+category7 = Category(name='Foosball')
 session.add(category7)
+session.commit()
+
+item25 = Item(
+        name='Foosball Table',
+        description='''Table football or table soccer, foosball in North
+        America, is a table-top game that is loosely based on football. The
+        aim of the game is to use the control knobs to move the ball into the
+        opponent's goal. There are no unified rules for playing the game, in
+        the sense that rules vary in different countries and even in cities,
+        and sometimes between different clubs in the same city. ''',
+        category=category7
+        )
+session.add(item25)
 session.commit()
 
 category8 = Category(name='Skating')
 session.add(category8)
 session.commit()
 
+item26 = Item(
+        name='Skates',
+        description='''The special boots with the glide blades.''',
+        category=category8
+        )
+session.add(item26)
+session.commit()
+
+item27 = Item(
+        name='Soakers',
+        description='''Soakers are terry cloth blade covers that protect and
+        keep figure skating blades dry. After drying your blades thoroughly,
+        soakers should be placed over figure skating blades and then, the
+        skates with the soakers on should be placed in the skate bag.''',
+        category=category8
+        )
+session.add(item27)
+session.commit()
+
+item28 = Item(
+        name='Guards',
+        description='''Every figure skater should have a pair of ice skate
+        guards inside his or her skate bag. Blades will be ruined if they
+        touch concrete, wood, grass, or any surface besides ice, rubber, or
+        carpet, so skate guards are a must. Some skaters wear skate guards
+        over their blades as soon as they step off the ice.''',
+        category=category8
+        )
+session.add(item28)
+session.commit()
+
 category9 = Category(name='Hockey')
 session.add(category9)
 session.commit()
 
-print 'categories has been added'
+item29 = Item(
+        name='Ice hockey stick',
+        description='''An ice hockey stick is a piece of equipment used in
+        ice hockey to shoot, pass, and carry the puck across the ice. Ice
+        hockey sticks are approximately 150-200 cm long, composed of a long,
+        slender shaft with a flat extension at one end called the blade.''',
+        category=category9
+        )
+session.add(item29)
+session.commit()
+
+item30 = Item(
+        name='Hockey puck',
+        description='''A hockey puck is a disk made of vulcanized rubber that
+        serves the same functions in various games as ball does in ball games.
+        The best-known use of pucks is in ice hockey, a major international
+        sport.''',
+        category=category9
+        )
+session.add(item30)
+session.commit()
+
+item31 = Item(
+        name='Ice skates',
+        description='''Ice skates are boots with blades attached to the bottom,
+        used to propel the bearer across a sheet of ice while ice skating. The
+        first ice skates were made from leg bones of horse, ox or deer, and
+        were attached to feet with leather straps. ''',
+        category=category9
+        )
+session.add(item31)
+session.commit()
+
+print 'categories and items have been added'
