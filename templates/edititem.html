@@ -1,0 +1,16 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <h1>Edit Item</h1>
+        <form action="{{ url_for('editItem', item_name=item.name) }}" method='post'>
+            <p>Title</p>
+            <input type='text' size='30' name='name' placeholder='{{item.name}}'>
+            <p>Description</p>
+            <textarea type='text' rows="8" cols='50' name='description' placeholder='Write something to describe the {{item.name}}'></textarea>
+            <p>Category</p>
+            <input type='text' size='30' name='category' placeholder='{{item.category_name}}'>
+            <input type='submit' value='Submit'>
+        </form>
+    </body>
+</html>
