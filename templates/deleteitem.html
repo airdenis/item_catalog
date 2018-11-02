@@ -3,8 +3,8 @@
     </head>
     <body>
         <h1>Delete Item</h1>
-        <form action="{{ url_for('deleteItem', item_name=item.name) }}" method='post'>
-            <p>Are your sure you want to delete <em>{{ item.name }}</em> item?</p>
+        <form action="{{ url_for('deleteItem', item_title=item.title) }}" method='post'>
+            <p>Are your sure you want to delete <em>{{ item.title }}</em> item?</p>
             <input type='submit' value='Submit'>
         </form>
     </body>
