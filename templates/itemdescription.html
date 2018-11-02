@@ -1,11 +1,6 @@
-<h1>Item Description</h1>
-
-<h2>{{ category.name }}</h1>
-
-
-<h3>{{ item.name }}</h3></br>
-<h3>{{ item.description }}</h3></br>
-<h3>{{ item.time }}</h3></br>
-</br>
-</br>
+<h3>{{ item.title }}</h3>
+Description: {{ item.description }}</br>
+<a href={{url_for('editItem', category_name=category.name, item_title=item.title)}}>Edit</a>
+|
+<a href={{url_for('deleteItem', item_title=item.title)}}>Delete</a>
 

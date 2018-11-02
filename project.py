@@ -17,6 +17,10 @@ DBSession = scoped_session(session_factory)
 session = DBSession()
 
 
+#@app.route('/catalog.json/')
+#def catalogJSON():
+
+
 @app.route('/')
 def categoriesDashboard():
     categories = session.query(Category).all()
@@ -27,17 +31,25 @@ def categoriesDashboard():
 def categoryItems(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(
-            category_name=category.name
+            cat_id=category.id
             ).order_by('time desc')
-    return render_template('items.html', category=category, items=items)
+    count = session.query(Item).filter_by(
+            cat_id=category.id
+            ).count()
+    return render_template(
+            'items.html',
+            category=category,
+            items=items,
+            count=count
+            )
 
 
-@app.route('/catalog/<string:category_name>/<string:item_name>/')
-def itemDescription(category_name, item_name):
+@app.route('/catalog/<string:category_name>/<string:item_title>/')
+def itemDescription(category_name, item_title):
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item).filter_by(
-            name=item_name,
-            category_name=category.name
+            title=item_title,
+            cat_id=category.id
             ).one()
     return render_template(
             'itemdescription.html',
@@ -49,45 +61,65 @@ def itemDescription(category_name, item_name):
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
     if request.method == 'POST':
-        new_item = Item(
-                name=request.form['name'],
-                description=request.form['description'],
-                category_name=request.form['category'],
-                time=func.now()
-                )
-        session.add(new_item)
-        session.commit()
-        session.close()
-        return redirect(url_for('categoriesDashboard'))
+        if request.form['category'] and request['title']:
+            category = session.query(Category).filter_by(
+                    name=request.form['category']
+                    ).one()
+            new_item = Item(
+                    title=request.form['title'],
+                    description=request.form['description'],
+                    cat_id=category.id,
+                    time=func.now()
+                    )
+            session.add(new_item)
+            session.commit()
+            session.close()
+            return redirect(url_for('categoriesDashboard'))
+        else:
+            return render_template('newitem.html')
     else:
         return render_template('newitem.html')
 
 
-@app.route('/catalog/<string:item_name>/edit', methods=['GET', 'POST'])
-def editItem(item_name):
-    edit_item = session.query(Item).filter_by(name=item_name).one()
+@app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
+def editItem(item_title):
+    edit_item = session.query(Item).filter_by(title=item_title).one()
+    category = session.query(Category).filter_by(id=edit_item.cat_id).one()
     if request.method == 'POST':
-        if request.form['name']:
-            edit_item.name = request.form['name']
-        if request.form['description']:
-            edit_item.description = request.form['description']
-        if request.form['category']:
-            edit_item.category_name = request.form['category']
-        edit_item.time = func.now()
-        session.add(edit_item)
-        session.commit()
-        session.close()
-        return redirect(url_for('categoriesDashboard'))
+        if request.form['category'] and request.form['title']:
+            category = session.query(Category).filter_by(
+                    name=request.form['category']
+                    ).one()
+            if request.form['title']:
+                edit_item.title = request.form['title']
+            if request.form['description']:
+                edit_item.description = request.form['description']
+            edit_item.cat_id = category.id
+            edit_item.time = func.now()
+            session.add(edit_item)
+            session.commit()
+            session.close()
+            return redirect(url_for('categoriesDashboard'))
+        else:
+            return render_template(
+                    'edititem.html',
+                    item=edit_item,
+                    category=category
+                    )
     else:
-        return render_template('edititem.html', item=edit_item)
+        return render_template(
+                'edititem.html',
+                item=edit_item,
+                category=category
+                )
 
 
 @app.route(
-        '/catalog/<string:item_name>/delete/',
+        '/catalog/<string:item_title>/delete/',
         methods=['GET', 'POST']
         )
-def deleteItem(item_name):
-    delete_item = session.query(Item).filter_by(name=item_name).one()
+def deleteItem(item_title):
+    delete_item = session.query(Item).filter_by(title=item_title).one()
     if request.method == 'POST':
         session.delete(delete_item)
         session.commit()

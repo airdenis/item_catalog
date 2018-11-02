@@ -3,13 +3,13 @@
     </head>
     <body>
         <h1>Edit Item</h1>
-        <form action="{{ url_for('editItem', item_name=item.name) }}" method='post'>
+        <form action="{{ url_for('editItem', item_title=item.title) }}" method='post'>
             <p>Title</p>
-            <input type='text' size='30' name='name' placeholder='{{item.name}}'>
+            <input type='text' size='30' name='title' placeholder='{{item.title}}'>
             <p>Description</p>
-            <textarea type='text' rows="8" cols='50' name='description' placeholder='Write something to describe the {{item.name}}'></textarea>
+            <textarea type='text' rows="8" cols='50' name='description' placeholder='Write something to describe the {{item.title}}...'></textarea>
             <p>Category</p>
-            <input type='text' size='30' name='category' placeholder='{{item.category_name}}'>
+            <input type='text' size='30' name='category' placeholder='{{category.name}}'>
             <input type='submit' value='Submit'>
         </form>
     </body>
