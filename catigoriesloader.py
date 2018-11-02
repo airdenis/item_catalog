@@ -13,7 +13,7 @@ session.add(category1)
 session.commit()
 
 item1 = Item(
-        name='Football boot',
+        name='Football boots',
         description='''Football boots, called cleats or soccer shoes
         in North America, are an item of footwear worn when playing
         football. Those designed for grass pitches have studs on the
@@ -34,7 +34,7 @@ session.add(item2)
 session.commit()
 
 item3 = Item(
-        name='Uniforms',
+        name='Soccer uniform',
         description='''A uniform is a type of clothing worn by members of
         an organization while participating in that organization's activity.
         Modern uniforms are most often worn by armed forces and paramilitary
@@ -46,7 +46,7 @@ session.add(item3)
 session.commit()
 
 item4 = Item(
-        name='Socks',
+        name='Soccer Socks',
         description='''A sock is an item of clothing worn on the feet and often
         covering the ankle or some part of the calf. Some type of shoe or boot
         is typically worn over socks. In ancient times, socks were made from
@@ -73,7 +73,7 @@ session.add(category2)
 session.commit()
 
 item6 = Item(
-        name='Shoes',
+        name='Basketball Shoes',
         description='''A shoe is an item of footwear intended to protect and
         comfort the human foot while the wearer is doing various activities.
         Shoes are also used as an item of decoration and fashion. The design
@@ -97,7 +97,7 @@ session.add(item7)
 session.commit()
 
 item8 = Item(
-        name='Uniforms',
+        name='Basketball Uniform',
         description='''A uniform is a type of clothing worn by members of
         an organization while participating in that organization's activity.
         Modern uniforms are most often worn by armed forces and paramilitary
@@ -121,7 +121,7 @@ session.add(item9)
 session.commit()
 
 item10 = Item(
-        name='Basketball',
+        name='Basketball ball',
         description='''A basketball is a spherical ball used in basketball games.
         Basketballs typically range in size from very small promotional items
         only a few inches in diameter to extra large balls nearly a foot in
@@ -160,7 +160,7 @@ session.add(item12)
 session.commit()
 
 item13 = Item(
-        name='Uniform',
+        name='Baseball Uniform',
         description='''A baseball uniform is a type of uniform worn by baseball
         players and, uniquely to baseball, coaches. Most baseball uniforms have
         the names and uniform numbers of players who wear them, usually on the
@@ -183,7 +183,7 @@ session.add(item14)
 session.commit()
 
 item15 = Item(
-        name='Baseball',
+        name='Baseball ball',
         description='''Baseball is a bat-and-ball game played between two
         opposing teams who take turns batting and fielding. The game proceeds
         when a player on the fielding team, called the pitcher, throws a ball
@@ -217,7 +217,7 @@ session.add(item17)
 session.commit()
 
 item18 = Item(
-        name='Uniforms',
+        name='Frisbee Uniform',
         description='''A uniform is a type of clothing worn by members of
         an organization while participating in that organization's activity.
         Modern uniforms are most often worn by armed forces and paramilitary
