@@ -16,7 +16,7 @@ class Category(Base):
     def serialize(self):
         return{
                 'id': self.id,
-                'name': self.name
+                'name': self.name,
                 }
 
 
@@ -26,17 +26,18 @@ class Item(Base):
     title = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)
     description = Column(String(1000))
-    time = Column(DateTime, default=func.now())
-    cat_id = Column(String, ForeignKey('category.id'))
-    category = relationship(Category)
+    init_time = Column(DateTime, default=func.now())
+    cat_id = Column(Integer, ForeignKey('category.id'))
+    category = relationship(Category, backref='items')
 
     @property
     def serialize(self):
         return{
-                'name': self.name,
+                'cat_id': self.cat_id,
                 'description': self.description,
-                'time': self.time,
-                'id': self.id
+                'id': self.id,
+                'title': self.title,
+                'init_time': self.init_time,
                 }
 
 

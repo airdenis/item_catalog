@@ -2,7 +2,7 @@ from flask import (
         Flask, render_template, redirect, request, url_for, flash, jsonify
         )
 from sqlalchemy import create_engine, func
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy.orm import scoped_session
 from database_setup import Base, Category, Item
 
@@ -17,8 +17,17 @@ DBSession = scoped_session(session_factory)
 session = DBSession()
 
 
-#@app.route('/catalog.json/')
-#def catalogJSON():
+@app.route('/catalog.json/')
+def catalogJSON():
+    categories = session.query(Category).options(
+            joinedload(Category.items)
+            ).all()
+    session.close()
+    return jsonify(dict(Category=[
+        dict(c.serialize, items=[
+            i.serialize for i in c.items
+            ]) for c in categories
+        ]))
 
 
 @app.route('/')
@@ -32,7 +41,7 @@ def categoryItems(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(
             cat_id=category.id
-            ).order_by('time desc')
+            ).order_by('init_time desc')
     count = session.query(Item).filter_by(
             cat_id=category.id
             ).count()
@@ -69,7 +78,7 @@ def newItem():
                     title=request.form['title'],
                     description=request.form['description'],
                     cat_id=category.id,
-                    time=func.now()
+                    init_time=func.now()
                     )
             session.add(new_item)
             session.commit()
@@ -95,7 +104,7 @@ def editItem(item_title):
             if request.form['description']:
                 edit_item.description = request.form['description']
             edit_item.cat_id = category.id
-            edit_item.time = func.now()
+            edit_item.init_time = func.now()
             session.add(edit_item)
             session.commit()
             session.close()
