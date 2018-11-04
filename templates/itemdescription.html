@@ -1,6 +1,10 @@
+ {% extends "main.html" %}
+ {% block content %}
+
 <h3>{{ item.title }}</h3>
 Description: {{ item.description }}</br>
 <a href={{url_for('editItem', category_name=category.name, item_title=item.title)}}>Edit</a>
 |
 <a href={{url_for('deleteItem', item_title=item.title)}}>Delete</a>
+{% endblock %}
 

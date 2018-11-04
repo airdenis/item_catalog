@@ -1,7 +1,7 @@
 from flask import (
         Flask, render_template, redirect, request, url_for, flash, jsonify
         )
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, desc
 from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy.orm import scoped_session
 from database_setup import Base, Category, Item
@@ -33,7 +33,13 @@ def catalogJSON():
 @app.route('/')
 def categoriesDashboard():
     categories = session.query(Category).all()
-    return render_template('categories.html', categories=categories)
+    count = session.query(Category).count()
+    items = session.query(Item).order_by(desc('init_time')).limit(count).all()
+    return render_template(
+            'categories.html',
+            categories=categories,
+            items=items
+            )
 
 
 @app.route('/catalog/<string:category_name>/items/')
@@ -41,7 +47,7 @@ def categoryItems(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(
             cat_id=category.id
-            ).order_by('init_time desc')
+            ).order_by(desc('init_time'))
     count = session.query(Item).filter_by(
             cat_id=category.id
             ).count()
@@ -69,8 +75,9 @@ def itemDescription(category_name, item_title):
 
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
+    categories = session.query(Category).all()
     if request.method == 'POST':
-        if request.form['category'] and request['title']:
+        if request.form['category'] and request.form['title']:
             category = session.query(Category).filter_by(
                     name=request.form['category']
                     ).one()
@@ -82,28 +89,30 @@ def newItem():
                     )
             session.add(new_item)
             session.commit()
-            session.close()
             return redirect(url_for('categoriesDashboard'))
         else:
-            return render_template('newitem.html')
+            return render_template('newitem.html', categories=categories)
     else:
-        return render_template('newitem.html')
+        return render_template('newitem.html', categories=categories)
 
 
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
 def editItem(item_title):
     edit_item = session.query(Item).filter_by(title=item_title).one()
-    category = session.query(Category).filter_by(id=edit_item.cat_id).one()
+    category_selected = session.query(Category).filter_by(
+            id=edit_item.cat_id
+            ).one()
+    categories = session.query(Category).all()
     if request.method == 'POST':
         if request.form['category'] and request.form['title']:
-            category = session.query(Category).filter_by(
+            category_selected = session.query(Category).filter_by(
                     name=request.form['category']
                     ).one()
             if request.form['title']:
                 edit_item.title = request.form['title']
             if request.form['description']:
                 edit_item.description = request.form['description']
-            edit_item.cat_id = category.id
+            edit_item.cat_id = category_selected.id
             edit_item.init_time = func.now()
             session.add(edit_item)
             session.commit()
@@ -113,13 +122,15 @@ def editItem(item_title):
             return render_template(
                     'edititem.html',
                     item=edit_item,
-                    category=category
+                    category_selected=category_selected,
+                    categories=categories
                     )
     else:
         return render_template(
                 'edititem.html',
                 item=edit_item,
-                category=category
+                category_selected=category_selected,
+                categories=categories
                 )
 
 

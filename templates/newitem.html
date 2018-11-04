@@ -1,16 +1,21 @@
-<html>
-    <head>
-    </head>
-    <body>
+ {% extends "main.html" %}
+ {% block content %}
+
         <h1>New Item</h1>
         <form action="{{ url_for('newItem') }}" method='post'>
             <p>Title</p>
-            <input type='text' size='30' name='title'>
+            <input type='text' size='30' name='title' placeholder="Choose a good name...">
             <p>Description</p>
-            <textarea type='text' rows="8" cols='50' name='description'></textarea>
-            <p>Category</p>
-            <input type='text' size='30' name='category'>
+            <textarea type='text' rows="8" cols='50' name='description' placeholder='Describe your item...'></textarea>
+            <div class="form-group">
+                <p>Category</p>
+                <select class="form-conrol" name='category' default='categories' id="exemle">
+                    <option>Choose a category...</option>
+                    {% for category in categories %}
+                    <option name='category'>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <input type='submit' value='Submit'>
         </form>
-    </body>
-</html>
+{% endblock %}

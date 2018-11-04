@@ -1,16 +1,21 @@
-<html>
-    <head>
-    </head>
-    <body>
+ {% extends "main.html" %}
+ {% block content %}
+
         <h1>Edit Item</h1>
         <form action="{{ url_for('editItem', item_title=item.title) }}" method='post'>
             <p>Title</p>
-            <input type='text' size='30' name='title' placeholder='{{item.title}}'>
+            <input type='text' size='30' name='title' value='{{item.title}}'>
             <p>Description</p>
-            <textarea type='text' rows="8" cols='50' name='description' placeholder='Write something to describe the {{item.title}}...'></textarea>
-            <p>Category</p>
-            <input type='text' size='30' name='category' placeholder='{{category.name}}'>
+            <textarea type='text' rows="8" cols='50' name='description'>{{item.description}}</textarea>
+            <div class="form-group">
+                <p>Category</p>
+                <select class="form-conrol" name='category' default='categories' id="exemle">
+                    <option>{{ category_selected.name }}</option>
+                    {% for category in categories %}
+                    <option name='category'>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <input type='submit' value='Submit'>
         </form>
-    </body>
-</html>
+{% endblock %}
