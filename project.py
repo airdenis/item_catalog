@@ -5,6 +5,9 @@ from sqlalchemy import create_engine, func, desc
 from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy.orm import scoped_session
 from database_setup import Base, Category, Item
+from flask import session as login_session
+import random
+import string
 
 app = Flask(__name__)
 
@@ -28,6 +31,15 @@ def catalogJSON():
             i.serialize for i in c.items
             ]) for c in categories
         ]))
+
+
+@app.route('/login/')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    print state
+    login_session['state'] = state
+    return "The current session state is {}".format(login_session['state'])
 
 
 @app.route('/')
@@ -150,5 +162,6 @@ def deleteItem(item_title):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super secret key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
