@@ -104,7 +104,7 @@ def fbconnect():
                     -webkit-border-radius: 150px;
                     -moz-border-radius: 150px;"> '''
 
-    flash("Now logged in as %s" % login_session['username'])
+    flash("Now logged in as {}".format(login_session['username']))
     return output
 
 
@@ -213,7 +213,7 @@ def gconnect():
                 border-radius: 150px;
                 -webkit-border-radius: 150px;
                 -moz-border-radius: 150px;"> '''
-    flash("you are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as {}".format(login_session['username']))
     print "done!"
     return output
 
@@ -366,6 +366,7 @@ def newItem():
                     )
             session.add(new_item)
             session.commit()
+            flash('{} item has been created!'.format(request.form['title']))
             return redirect(url_for('categoriesDashboard'))
         else:
             return render_template('newitem.html', categories=categories)
@@ -394,6 +395,9 @@ def editItem(item_title):
             session.add(edit_item)
             session.commit()
             session.close()
+            flash('{} item has been successfully edited!'.format(
+                request.form['title']
+                ))
             return redirect(url_for('categoriesDashboard'))
         else:
             return render_template(
@@ -427,6 +431,9 @@ def deleteItem(item_title):
         session.delete(delete_item)
         session.commit()
         session.close()
+        flash('{} item has been successfully deleted!'.format(
+            delete_item.title
+            ))
         return redirect(url_for('categoriesDashboard'))
     else:
         return render_template('deleteitem.html', item=delete_item)

@@ -3,7 +3,9 @@ body {
 }
 
 .container{
-    background-color: #EDF5E1
+    background-color: #EDF5E1;
+    margin-top: 10px;
+    border-radius: 25px;
 }
 
 .top-menu{
@@ -11,8 +13,18 @@ body {
 }
 .navbar-btn{
     margin: 3px;
+    vertical-align: middle;
 }
 
 .site-lebel{
-    color: rgb(255, 193, 7);;
+    color: rgb(255, 193, 7);
+}
+
+.flash{
+    color:  #FF0000;
+    text-align: center;
+}
+
+.message{
+    text-align: center;
 }
