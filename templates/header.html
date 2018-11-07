@@ -4,9 +4,15 @@
          <h1 class="site-lebel">Catalog App</h1>
     </div>
     <div class="col-md-6 text-right">
-        <a href="{{ url_for('showLogin') }}">
-            <button type="button" class="btn btn-warning btn-sm navbar-btn">Login</button>
-        </a>
+        {% if 'username' not in session %}
+            <a href="{{ url_for('showLogin') }}">
+                <button type="button" class="btn btn-warning btn-sm navbar-btn">Login</button>
+            </a>
+        {% else %}
+            <a href="{{ url_for('disconnect') }}">
+                <button type="button" class="btn btn-warning btn-sm navbar-btn">Logout</button>
+            </a>
+        {% endif %}
     </div>
 </div>
 </div>
