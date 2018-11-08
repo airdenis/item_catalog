@@ -1,26 +1,34 @@
  {% extends "main.html" %}
  {% block content %}
 
-{% if count == 1 %}
+<div class='row items'>
+    {% if count == 1 %}
+    
+    <div class='col-md-12'>
+    <h3>{{ category.name }} Item ({{ count }} item)</h3>
+    </div>
 
-<h1>{{ category.name }} Item ({{ count }} item)</h1>
+    {% else %}
 
-{% else %}
+    <div class='col-md-12'>
+    <h3>{{ category.name }} Items ({{ count }} items)</h3>
+    </div>
 
-<h1>{{ category.name }} Items ({{ count }} items)</h1>
+    {% endif %}
 
-{% endif %}
+    <div class='col-md-12'>
+    {% for item in items %}
 
-{% for item in items %}
+    <h4>
+        <a href={{url_for('itemDescription', 
+            category_name=category.name, 
+            item_title=item.title)}}>
+            {{ item.title }}
+        </a>
+    </h4>
 
-<h3>
-    <a href={{url_for('itemDescription', 
-        category_name=category.name, 
-        item_title=item.title)}}>
-        {{ item.title }}
-    </a>
-</h3>
-
-{% endfor %}
+    {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

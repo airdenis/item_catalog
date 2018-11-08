@@ -1,16 +1,14 @@
 {% extends "main.html" %}
 {% block content %}
-        <div class="container">
             <div class='row'>
-
-                <div class='col-md-4'>
+                <div class='col-md-4 categories'>
                     <h3><b>Categories</b></h3>
                     {% for category in categories %}
                         <h4>
-                            <a href={{url_for('categoryItems', category_name=category.name)}}>{{category.name}}</a></h4>
+                            <a class='list-categories' href={{url_for('categoryItems', category_name=category.name)}}>{{category.name}}</a></h4>
                     {% endfor %}
                 </div>
-                <div class='col-md-8'>
+                <div class='col-md-8 last-items'>
                     <p><a href={{url_for('newItem')}}>Add Item</a></p>
                     <h3><b>Latest Items</b></h3>
                     {% for item in items %}
@@ -18,5 +16,4 @@
                     {% endfor %}
                 </div>
             </div>
-        </div>
 {% endblock %}

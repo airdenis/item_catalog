@@ -1,14 +1,15 @@
  {% extends "main.html" %}
  {% block content %}
 
-        <h1>Edit Item</h1>
+<div class='row edit-item'>
+    <div class='col-md-12'><h3>Edit Item</h3></div>
         <form action="{{ url_for('editItem', item_title=item.title) }}" method='post'>
-            <p>Title</p>
+            <h5>Title</h5>
             <input type='text' size='30' name='title' value='{{item.title}}'>
-            <p>Description</p>
+            <h5>Description</h5>
             <textarea type='text' rows="8" cols='50' name='description'>{{item.description}}</textarea>
             <div class="form-group">
-                <p>Category</p>
+                <h5>Category</h5>
                 <select class="form-conrol" name='category' default='categories' id="exemle">
                     <option>{{ category_selected.name }}</option>
                     {% for category in categories %}
@@ -18,4 +19,5 @@
             </div>
             <input type='submit' value='Submit'>
         </form>
+</div>
 {% endblock %}

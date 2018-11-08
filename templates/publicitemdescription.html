@@ -1,7 +1,9 @@
  {% extends "main.html" %}
  {% block content %}
 
-<h3>{{ item.title }}</h3>
-Description: {{ item.description }}</br>
+<div class='row pub-item-description'>
+    <div class='col-md-12'><h3>{{ item.title }}</h3></div>
+    <strong>Description: </strong> {{ item.description }}</br>
+<div>
 {% endblock %}
 
