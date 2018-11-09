@@ -13,6 +13,7 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 import json
 from flask import make_response
+# from flask_wtf import CsrfProtect
 import requests
 
 CLIENT_ID = json.loads(
@@ -20,7 +21,7 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "Item-Catalog"
 
 app = Flask(__name__)
-
+# csrf = Csrfprotect(app)
 
 engine = create_engine('sqlite:///catalogitem.db')
 Base.metadata.bind = engine
@@ -352,23 +353,34 @@ def itemDescription(category_name, item_title):
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
     categories = session.query(Category).all()
+    items = session.query(Item).all()
     if request.method == 'POST':
-        if request.form['category'] and request.form['title']:
-            category = session.query(Category).filter_by(
-                    name=request.form['category']
-                    ).one()
-            new_item = Item(
-                    title=request.form['title'],
-                    description=request.form['description'],
-                    user_id=login_session['user_id'],
-                    cat_id=category.id,
-                    init_time=func.now()
-                    )
-            session.add(new_item)
-            session.commit()
-            flash('{} item has been created!'.format(request.form['title']))
-            return redirect(url_for('categoriesDashboard'))
+        if request.form['title'] not in [item.title for item in items]:
+            if (
+                    request.form['category'] != 'Choose a category...'
+                    and request.form['title']
+                    ):
+                category = session.query(Category).filter_by(
+                        name=request.form['category']
+                        ).one()
+                new_item = Item(
+                        title=request.form['title'],
+                        description=request.form['description'],
+                        user_id=login_session['user_id'],
+                        cat_id=category.id,
+                        init_time=func.now()
+                        )
+                session.add(new_item)
+                session.commit()
+                flash('{} item has been created!'.format(
+                    request.form['title']
+                    ))
+                return redirect(url_for('categoriesDashboard'))
+            else:
+                flash('Please, give a name and pick a category for your item!')
+                return render_template('newitem.html', categories=categories)
         else:
+            flash('{} title already exists!'.format(request.form['title']))
             return render_template('newitem.html', categories=categories)
     else:
         return render_template('newitem.html', categories=categories)
@@ -400,6 +412,7 @@ def editItem(item_title):
                 ))
             return redirect(url_for('categoriesDashboard'))
         else:
+            flash('Please choose a title and pick a category!')
             return render_template(
                     'edititem.html',
                     item=edit_item,
