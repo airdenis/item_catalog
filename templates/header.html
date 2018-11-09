@@ -8,11 +8,14 @@
     <div class="col-md-6 text-right">
         {% if 'username' not in session %}
             <a href="{{ url_for('showLogin') }}">
-                <button type="button" class="btn btn-warning btn-sm navbar-btn">Login</button>
+                <button type="button" class="btn btn-warning btn-sm navbar-btn">Sign In</button>
+            </a>
+            <a href="{{ url_for('showLogin') }}">
+                <button type="button" class="btn btn-warning btn-sm navbar-btn">Sign Up</button>
             </a>
         {% else %}
             <a href="{{ url_for('disconnect') }}">
-                <button type="button" class="btn btn-warning btn-sm navbar-btn">Logout</button>
+                <button type="button" class="btn btn-warning btn-sm navbar-btn">Sign Out</button>
             </a>
         {% endif %}
     </div>
