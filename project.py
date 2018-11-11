@@ -1,6 +1,10 @@
+import os
+from PIL import Image
 from flask import (
         Flask, render_template, redirect, request, url_for, flash, jsonify
         )
+from resizeimage import resizeimage
+from werkzeug.utils import secure_filename
 from sqlalchemy import create_engine, func, desc
 from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy.orm import scoped_session
@@ -16,11 +20,14 @@ from flask import make_response
 # from flask_wtf import CsrfProtect
 import requests
 
+UPLOAD_FOLDER = '/vagrant/item_catalog/static/item_images'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 CLIENT_ID = json.loads(
             open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item-Catalog"
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # csrf = Csrfprotect(app)
 
 engine = create_engine('sqlite:///catalogitem.db')
@@ -296,6 +303,8 @@ def categoriesDashboard():
     categories = session.query(Category).all()
     count = session.query(Category).count()
     items = session.query(Item).order_by(desc('init_time')).limit(count).all()
+    for item in items:
+        print item.image
     if 'username' not in login_session:
         return render_template(
                 'publiccategories.html',
@@ -350,6 +359,11 @@ def itemDescription(category_name, item_title):
                 )
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
     categories = session.query(Category).all()
@@ -363,10 +377,28 @@ def newItem():
                 category = session.query(Category).filter_by(
                         name=request.form['category']
                         ).one()
+                if 'file' not in request.files:
+                    image = request.files['image']
+                    if image.filename != '' and allowed_file(image.filename):
+                        filename = secure_filename(image.filename)
+                        image_resize = Image.open(image)
+                        image_resize = resizeimage.resize_contain(
+                                image_resize, [200, 200]
+                                )
+                        # image_resize.save(image.filename, image_resize.format)
+                        image_resize.save(os.path.join(
+                            app.config['UPLOAD_FOLDER'], filename
+                            ), image_resize.format)
+                        image_path = 'item_images/' + filename
+                    else:
+                        image_path = None
+                else:
+                    image_path = None
                 new_item = Item(
                         title=request.form['title'],
                         description=request.form['description'],
                         user_id=login_session['user_id'],
+                        image=image_path,
                         cat_id=category.id,
                         init_time=func.now()
                         )

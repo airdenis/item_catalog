@@ -13,6 +13,9 @@
                     <h3><b>Latest Items</b></h3>
                     {% for item in items %}
                     <h5><a href={{url_for('itemDescription', category_name=item.category.name, item_title=item.title)}}>{{ item.title }}</a> <em>({{ item.category.name }})</em></h5>
+                    {% if item.image %}
+                        <img src="{{ url_for('static', filename=item.image) }}"/>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
