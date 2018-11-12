@@ -3,7 +3,7 @@
 
 <div class='row edit-item'>
     <div class='col-md-12'><h3>Edit Item</h3></div>
-        <form action="{{ url_for('editItem', item_title=item.title) }}" method='post'>
+        <form action="{{ url_for('editItem', item_title=item.title) }}" method='post' enctype="multipart/form-data">
             <h5>Title</h5>
             <input type='text' size='30' name='title' value='{{item.title}}'>
             <h5>Description</h5>
@@ -17,6 +17,10 @@
                     {% endfor %}
                 </select>
             </div>
+            <div>
+                <h5>Choose a item picture:</h5>
+                <input type="file" name="image" value="{{ item.image }}">
+            </div><br><br>
             <input type='submit' value='Submit'>
         </form>
 </div>
