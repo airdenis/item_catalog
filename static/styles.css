@@ -60,6 +60,8 @@ body {
 .items,
 .edit-item,
 .delete-item,
+.login-box,
+.signup-box,
 .new-item{
     background-color: #DCD0C0;
     border-bottom-right-radius: 20px;
@@ -75,4 +77,25 @@ body {
 .list-categories{
     opacity: 1.0;
     filter: alpha(opacity=100)
+}
+
+.item-image{
+    border-radius: 20px;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    box-shadow: 5px 5px 5px #373737;
+}
+
+.image-container{
+    margin-top: 10px;
+    text-align: center;
+}
+
+.lt-items{
+    text-align: center;
+}
+
+.facebook{
+    color: #000000;
 }
