@@ -298,6 +298,11 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
+@app.route('/signup/')
+def signUp():
+    return render_template('signup.html')
+
+
 @app.route('/')
 def categoriesDashboard():
     categories = session.query(Category).all()
@@ -377,23 +382,30 @@ def newItem():
                 category = session.query(Category).filter_by(
                         name=request.form['category']
                         ).one()
-                if 'file' not in request.files:
+                if 'file' not in request.files and 'image' in request.files:
                     image = request.files['image']
                     if image.filename != '' and allowed_file(image.filename):
                         filename = secure_filename(image.filename)
+                        if (image.filename in
+                                [item.image.split('/')[-1] for item in items]):
+                            flash('{} picture name already exists!'.format(
+                                image.filename
+                                ))
+                            return render_template(
+                                    'newitem.html', categories=categories
+                                    )
                         image_resize = Image.open(image)
                         image_resize = resizeimage.resize_contain(
                                 image_resize, [200, 200]
                                 )
-                        # image_resize.save(image.filename, image_resize.format)
                         image_resize.save(os.path.join(
                             app.config['UPLOAD_FOLDER'], filename
                             ), image_resize.format)
                         image_path = 'item_images/' + filename
                     else:
-                        image_path = None
+                        image_path = 'item_images/sport-goods.jpg'
                 else:
-                    image_path = None
+                    image_path = 'item_images/sport-goods.jpg'
                 new_item = Item(
                         title=request.form['title'],
                         description=request.form['description'],
@@ -424,12 +436,38 @@ def editItem(item_title):
     category_selected = session.query(Category).filter_by(
             id=edit_item.cat_id
             ).one()
+    items = session.query(Item).all()
     categories = session.query(Category).all()
     if request.method == 'POST':
         if request.form['category'] and request.form['title']:
             category_selected = session.query(Category).filter_by(
                     name=request.form['category']
                     ).one()
+            if 'file' not in request.files and 'image' in request.files:
+                image = request.files['image']
+                if image.filename != '' and allowed_file(image.filename):
+                    filename = secure_filename(image.filename)
+                    if (image.filename in
+                            [item.image.split('/')[-1] for item in items]):
+                        flash('{} picture name already exists!'.format(
+                            image.filename
+                            ))
+                        return render_template(
+                                'newitem.html', categories=categories
+                                )
+                    image_resize = Image.open(image)
+                    image_resize = resizeimage.resize_contain(
+                            image_resize, [200, 200]
+                            )
+                    image_resize.save(os.path.join(
+                        app.config['UPLOAD_FOLDER'], filename
+                        ), image_resize.format)
+                    image_path = 'item_images/' + filename
+                else:
+                    image_path = 'item_images/sport-goods.jpg'
+            else:
+                image_path = 'item_images/sport-goods.jpg'
+            edit_item.image = image_path
             if request.form['title']:
                 edit_item.title = request.form['title']
             if request.form['description']:

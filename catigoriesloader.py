@@ -22,6 +22,7 @@ item1 = Item(
         in North America, are an item of footwear worn when playing
         football. Those designed for grass pitches have studs on the
         outsole to aid grip.''',
+        image = 'item_images/sport-goods.jpg',
         category=category1,
         user=user1
         )
@@ -33,6 +34,7 @@ item2 = Item(
         description='''A shin guard or shin pad is a piece of equipment
             worn on the front of a player\'s shin to protect them
             from injury.''',
+        image = 'item_images/sport-goods.jpg',
         category=category1,
         user=user1
         )
@@ -46,6 +48,7 @@ item3 = Item(
         Modern uniforms are most often worn by armed forces and paramilitary
         organizations such as police, emergency services, security guards,
         in some workplaces and schools and by inmates in prisons.''',
+        image = 'item_images/sport-goods.jpg',
         category=category1,
         user=user1
         )
@@ -59,6 +62,7 @@ item4 = Item(
         is typically worn over socks. In ancient times, socks were made from
         leather or matted animal hair. In the late 16th century, machine-knit
         socks were first produced.''',
+        image = 'item_images/sport-goods.jpg',
         category=category1,
         user=user1
         )
@@ -71,6 +75,7 @@ item5 = Item(
         the ball used in the sport of association football. The title of the
         ball varies according to whether the sport is called "football",
         "soccer", or "association football".''',
+        image = 'item_images/sport-goods.jpg',
         category=category1,
         user=user1
         )
@@ -89,6 +94,7 @@ item6 = Item(
         Shoes are also used as an item of decoration and fashion. The design
         of shoes has varied enormously through time and from culture to
         culture, with appearance originally being tied to function.''',
+        image = 'item_images/sport-goods.jpg',
         category=category2,
         user=user1
         )
@@ -102,6 +108,7 @@ item7 = Item(
         net suspended from a hoop. It is made of a flat, rigid piece of, often
         Plexiglas or tempered glass which also has the properties of safety
         glass when accidentally shattered.''',
+        image = 'item_images/sport-goods.jpg',
         category=category2,
         user=user1
         )
@@ -115,6 +122,7 @@ item8 = Item(
         Modern uniforms are most often worn by armed forces and paramilitary
         organizations such as police, emergency services, security guards,
         in some workplaces and schools and by inmates in prisons.''',
+        image = 'item_images/sport-goods.jpg',
         category=category2,
         user=user1
         )
@@ -128,6 +136,7 @@ item9 = Item(
         behind each goal. The shot clock times a play and provides that a team
         on offense that does not promptly try to score points loses possession
         of the ball.''',
+        image = 'item_images/sport-goods.jpg',
         category=category2,
         user=user1
         )
@@ -141,6 +150,7 @@ item10 = Item(
         only a few inches in diameter to extra large balls nearly a foot in
         diameter used in training exercises. ... High school and junior leagues
         normally use NCAA, NBA or WNBA sized balls.''',
+        image = 'item_images/sport-goods.jpg',
         category=category2,
         user=user1
         )
@@ -158,6 +168,7 @@ item11 = Item(
         baseball players of the defending team, which assists players in
         catching and fielding balls hit by a batter or thrown by a
         teammate.''',
+        image = 'item_images/sport-goods.jpg',
         category=category3,
         user=user1
         )
@@ -171,6 +182,7 @@ item12 = Item(
         errant pitches thrown by the pitcher. A batter who is "hit by pitch,"
         due to an inadvertent wild pitch or a pitcher's purposeful attempt to
         hit him, may be seriously, even fatally, injured.''',
+        image = 'item_images/sport-goods.jpg',
         category=category3,
         user=user1
         )
@@ -183,6 +195,7 @@ item13 = Item(
         players and, uniquely to baseball, coaches. Most baseball uniforms have
         the titles and uniform numbers of players who wear them, usually on the
         backs of the uniforms to distinguish players from each other.''',
+        image = 'item_images/sport-goods.jpg',
         category=category3,
         user=user1
         )
@@ -196,6 +209,7 @@ item14 = Item(
         pitcher. By regulation it may be no more than 2.75 inches (70 mm) in
         diameter at the thickest part and no more than 42 inches (1,100 mm)
         long''',
+        image = 'item_images/sport-goods.jpg',
         category=category3,
         user=user1
         )
@@ -208,6 +222,7 @@ item15 = Item(
         opposing teams who take turns batting and fielding. The game proceeds
         when a player on the fielding team, called the pitcher, throws a ball
         which a player on the batting team tries to hit with a bat.''',
+        image = 'item_images/sport-goods.jpg',
         category=category3,
         user=user1
         )
@@ -223,6 +238,7 @@ item16 = Item(
         title='Frisbee Disk',
         description='''In order to play ultimate frisbee you a need a frisbee
         (makes sense). The regulation size for a frisbee is 175 gram disc. ''',
+        image = 'item_images/sport-goods.jpg',
         category=category4,
         user=user1
         )
@@ -234,6 +250,7 @@ item17 = Item(
         description='''In order to properly play ultimte frisbee you need to
         label the endzones. the endzones are exactly. If you don't have cones,
         you can use shoes if you don't have cones with you. ''',
+        image = 'item_images/sport-goods.jpg',
         category=category4,
         user=user1
         )
@@ -247,6 +264,7 @@ item18 = Item(
         Modern uniforms are most often worn by armed forces and paramilitary
         organizations such as police, emergency services, security guards,
         in some workplaces and schools and by inmates in prisons.''',
+        image = 'item_images/sport-goods.jpg',
         category=category4,
         user=user1
         )
@@ -262,6 +280,7 @@ item19 = Item(
         description='''Snowboards are boards where both feet are secured to
         the same board, which are wider than skis, with the ability to glide
         on snow.''',
+        image = 'item_images/sport-goods.jpg',
         category=category5,
         user=user1
         )
@@ -275,6 +294,7 @@ item20 = Item(
         maneuver the ski. However, if certain force limits are exceeded, it
         releases the boot to minimize skier injury, such as in the case of a
         fall or impact.''',
+        image = 'item_images/sport-goods.jpg',
         category=category5,
         user=user1
         )
@@ -287,6 +307,7 @@ item21 = Item(
         constructed for winter sports. Use was rare until about 2000, but by
         about 2010 the great majority of skiers and snowboarders in the US
         and Europe wear helmets.''',
+        image = 'item_images/sport-goods.jpg',
         category=category5,
         user=user1
         )
@@ -303,6 +324,7 @@ item22 = Item(
         that are twisted or braided together into a larger and stronger form.
         Ropes have tensile strength and so can be used for dragging and
         lifting, but are too flexible to provide compressive strength.''',
+        image = 'item_images/sport-goods.jpg',
         category=category6,
         user=user1
         )
@@ -315,6 +337,7 @@ item23 = Item(
         shackle, a metal loop with a spring-loaded gate used to quickly and
         reversibly connect components, most notably in safety-critical
         systems.''',
+        image = 'item_images/sport-goods.jpg',
         category=category6,
         user=user1
         )
@@ -328,6 +351,7 @@ item24 = Item(
         of ropes to provide access or safety such as industrial rope access,
         working at heights, etc. A harness secures a person to a rope or an
         anchor point.''',
+        image = 'item_images/sport-goods.jpg',
         category=category6,
         user=user1
         )
@@ -346,6 +370,7 @@ item25 = Item(
         opponent's goal. There are no unified rules for playing the game, in
         the sense that rules vary in different countries and even in cities,
         and sometimes between different clubs in the same city. ''',
+        image = 'item_images/sport-goods.jpg',
         category=category7,
         user=user1
         )
@@ -359,6 +384,7 @@ session.commit()
 item26 = Item(
         title='Skates',
         description='''The special boots with the glide blades.''',
+        image = 'item_images/sport-goods.jpg',
         category=category8,
         user=user1
         )
@@ -371,6 +397,7 @@ item27 = Item(
         keep figure skating blades dry. After drying your blades thoroughly,
         soakers should be placed over figure skating blades and then, the
         skates with the soakers on should be placed in the skate bag.''',
+        image = 'item_images/sport-goods.jpg',
         category=category8,
         user=user1
         )
@@ -384,6 +411,7 @@ item28 = Item(
         touch concrete, wood, grass, or any surface besides ice, rubber, or
         carpet, so skate guards are a must. Some skaters wear skate guards
         over their blades as soon as they step off the ice.''',
+        image = 'item_images/sport-goods.jpg',
         category=category8,
         user=user1
         )
@@ -400,6 +428,7 @@ item29 = Item(
         ice hockey to shoot, pass, and carry the puck across the ice. Ice
         hockey sticks are approximately 150-200 cm long, composed of a long,
         slender shaft with a flat extension at one end called the blade.''',
+        image = 'item_images/sport-goods.jpg',
         category=category9,
         user=user1
         )
@@ -412,6 +441,7 @@ item30 = Item(
         serves the same functions in various games as ball does in ball games.
         The best-known use of pucks is in ice hockey, a major international
         sport.''',
+        image = 'item_images/sport-goods.jpg',
         category=category9,
         user=user1
         )
@@ -424,6 +454,7 @@ item31 = Item(
         used to propel the bearer across a sheet of ice while ice skating. The
         first ice skates were made from leg bones of horse, ox or deer, and
         were attached to feet with leather straps. ''',
+        image = 'item_images/sport-goods.jpg',
         category=category9,
         user=user1
         )
