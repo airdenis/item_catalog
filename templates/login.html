@@ -114,11 +114,11 @@ function signInCallback(authResult) {
 
 
 </button><br><br>
-<form action="" method='post' enctype="multipart/form-data">
+<form action="{{ url_for('showLogin') }}" method='post' enctype="multipart/form-data">
     <h5>Email Address</h5>
-    <input type='text' size='30' name='name' placeholder='Type email address...'><br><br>
+    <input type='text' size='30' name='email' placeholder='Type email address...'><br><br>
     <h5>Password</h5>
-    <input type='password' size='30' name='email' placeholder='Password...'>
+    <input type='password' size='30' name='password' placeholder='Password...'>
     <br><br>
     <input type='submit' value='Submit'>
 </form>

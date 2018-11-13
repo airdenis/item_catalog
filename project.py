@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 from flask import (
-        Flask, render_template, redirect, request, url_for, flash, jsonify
+        Flask, render_template, redirect, request, url_for, flash, jsonify, g
         )
 from resizeimage import resizeimage
 from werkzeug.utils import secure_filename
@@ -17,7 +17,7 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 import json
 from flask import make_response
-# from flask_wtf import CsrfProtect
+from flask_httpauth import HTTPBasicAuth
 import requests
 
 UPLOAD_FOLDER = '/vagrant/item_catalog/static/item_images'
@@ -28,7 +28,7 @@ APPLICATION_NAME = "Item-Catalog"
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# csrf = Csrfprotect(app)
+auth = HTTPBasicAuth()
 
 engine = create_engine('sqlite:///catalogitem.db')
 Base.metadata.bind = engine
@@ -244,7 +244,7 @@ def createUser(login_session):
     newUser = User(
             name=login_session['username'],
             email=login_session['email'],
-            picture=login_session['picture']
+            image=login_session['picture']
             )
     session.add(newUser)
     session.commit()
@@ -289,18 +289,113 @@ def catalogJSON():
         ]))
 
 
-@app.route('/login/')
+@app.route('/login/', methods=['GET', 'POST'])
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     print state
     login_session['state'] = state
+    if request.method == 'POST':
+        print 1
+        if 'email' in request.form and 'password' in request.form:
+            users = session.query(User).all()
+            email = request.form['email']
+            password = request.form['password']
+            if email in [user.email for user in users]:
+                user = session.query(User).filter_by(email=email).one()
+                if user.verify_password(password):
+                    login_session['provider'] = 'local'
+                    login_session['username'] = user.name
+                    login_session['email'] = user.email
+                    login_session['picture'] = user.image
+                    login_session['user_id'] = user.id
+                    return redirect(url_for('categoriesDashboard'))
+                else:
+                    flash('The password is not corect!')
+                    return render_template('login.html', STATE=state)
+            else:
+                flash('{} email is not registred!'.format(email))
+                return render_template('login.html', STATE=state)
     return render_template('login.html', STATE=state)
 
 
-@app.route('/signup/')
+@app.route('/signup/', methods=['GET', 'POST'])
 def signUp():
-    return render_template('signup.html')
+    users = session.query(User).all()
+    if 'email' in request.form and request.method == 'POST':
+        email = request.form['email']
+        if request.form['email'] not in [user.email for user in users]:
+            flash('{} is already is registred!'.format(email))
+            return render_template('signup.html')
+    else:
+        flash('Please provide your email address!')
+        return render_template('signup.html')
+
+    if 'file' not in request.files and 'image' in request.files:
+        image = request.files['image']
+        if image.filename != '' and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            if (
+                    image.filename in
+                    [user.image.split('/')[-1] for user in users]
+                    ):
+                flash('{} picture name already exists!'.format(image.filename))
+                return render_template('signup.html')
+            image_resize = Image.open(image)
+            image_resize = resizeimage.resize_contain(image_resize, [200, 200])
+            image_resize.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename
+                    ), image_resize.format)
+            image_path = 'item_images/' + filename
+        else:
+            image_path = 'profile_images/profile.png'
+    else:
+        image_path = 'profile_images/profile.png'
+
+    if 'username' in request.form:
+        username = request.form['username']
+        if username in [user.name for user in users]:
+            flash('{} user name already exists!'.format(username))
+            return render_template('signup.html')
+    else:
+        flash('Please choose a user name!')
+        return render_template('signup.html')
+
+    if 'password1' in request.form and 'password2' in request.form:
+        password1 = request.form['password1']
+        password2 = request.form['password2']
+        if password1 != password2:
+            flash('The password does not match')
+            return render_template('signup.html')
+    else:
+        flash('Please choose a password!')
+        return render_template('signup.html')
+
+    user = User(name=username, email=email, image=image_path)
+    user.hash_password(password1)
+    session.add(user)
+    session.commit()
+    return redirect(url_for('showLogin'))
+
+
+@auth.verify_password
+def verify_password(email_or_token, password):
+    user_id = User.verify_auth_token(email_or_token)
+    if user_id:
+        user = session.query(User).filter_by(id=user_id).one()
+    else:
+        user = session.query(User).filter_by(email=email_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+    g.user = user
+    return True
+
+
+@app.route('/token')
+@auth.login_required
+def get_auth_token():
+    token = g.user.generate_auth_token()
+    return jsonify({'token': token.decode('ascii')})
 
 
 @app.route('/')
@@ -320,7 +415,9 @@ def categoriesDashboard():
         return render_template(
                 'categories.html',
                 categories=categories,
-                items=items
+                items=items,
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider']
                 )
 
 

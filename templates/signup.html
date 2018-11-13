@@ -2,15 +2,15 @@
 {% block content %}
 
 <div class="row signup-box">
-<form action="" method='post' enctype="multipart/form-data">
+    <form action="{{ url_for('signUp') }}" method='post' enctype="multipart/form-data">
     <h5>User Name</h5>
-    <input type='text' size='30' name='name' placeholder='name...'><br><br>
+    <input type='text' size='30' name='username' placeholder='User Name...'><br><br>
     <h5>Email Adress</h5>
-    <input type='text' size='30' name='email' placeholder='email...'><br><br>
+    <input type='text' size='30' name='email' placeholder='Email...'><br><br>
     <h5>Password</h5>
-    <input type='password' size='30' name='password1'><br><br>
+    <input type='password' size='30' name='password1' placeholder='Password...'><br><br>
     <h5>Repeat Password</h5>
-    <input type='password' size='30' name='password2'><br><br>
+    <input type='password' size='30' name='password2' placeholder='Retype Password...'><br><br>
     <h5>Profile Picture</h5>
     <input type='file' name='image'><br><br>
     <br>

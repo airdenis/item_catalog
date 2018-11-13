@@ -99,3 +99,7 @@ body {
 .facebook{
     color: #000000;
 }
+
+.profile_image{
+    border-radius: 15px;
+}
