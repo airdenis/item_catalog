@@ -1,5 +1,5 @@
 # Item Catalog Web App #
-This web app is a project for the Udacity [FSND Course][https://www.udacity.com].
+This web app is a project for the Udacity [FSND Course](https://www.udacity.com).
 
 # Project Description #
 This project is a RESTful web application utilizing the Flask framework which accesses a SQL database that populates categories and their items. OAuth2 provides authentication for further CRUD functionality on the application. Third party OAuth2 is implemented for Google and FaceBook Accounts.
@@ -23,7 +23,7 @@ There are some dependancies and a few instructions on how to run the application
 - VirtualBox
 
 # How to Install #
-1. Install Vagrant & VirtualBox [www.vagrant.com][www.vagrant.com], [www.virtualbox.org][www.virtualbox.org]
+1. Install Vagrant & VirtualBox [www.vagrant.com](www.vagrant.com), [www.virtualbox.org](www.virtualbox.org).
 2. Clone the Udacity Vagrantfile
 3. Go to Vagrant directory and either clone this repo or download and place zip here
 4. Launch the Vagrant VM (vagrant up)
@@ -38,7 +38,7 @@ There are some dependancies and a few instructions on how to run the application
 13. Setup application database python */item-catalog/database_setup.py*
 14. Insert fake data python */item-catalog/categories_loader.py* (inser your email address used for google or facebook account to be able to do CRUD manipulation with given data.)
 15. Run application using python */item-catalog/project.py*
-16. Access the application locally using [http://localhost:5000][http://localhost:5000]
+16. Access the application locally using [http://localhost:5000](http://localhost:5000)
 
 # Using Google Login #
 To get the Google login working there are a few additional steps:
