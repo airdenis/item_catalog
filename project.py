@@ -297,6 +297,23 @@ def catalogJSON():
         ]))
 
 
+@app.route('/catalog/<path:category_name>/items/JSON')
+def categoryItemsJSON(category_name):
+    category = session.query(Category).filter_by(name=category_name).one()
+    items = session.query(Item).filter_by(category=category).all()
+    return jsonify(items=[i.serialize for i in items])
+
+
+@app.route('/catalog/<path:category_name>/<path:item_title>/JSON')
+def ItemJSON(category_name, item_title):
+    category = session.query(Category).filter_by(name=category_name).one()
+    item = session.query(Item).filter_by(
+            title=item_title,
+            category=category
+            ).one()
+    return jsonify(item=[item.serialize])
+
+
 # Create anti-forgery state token or login.
 @app.route('/login/', methods=['GET', 'POST'])
 def showLogin():
