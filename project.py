@@ -442,6 +442,13 @@ def categoryItems(category_name):
     count = session.query(Item).filter_by(
             cat_id=category.id
             ).count()
+    if 'username' not in login_session:
+        return render_template(
+                'items.html',
+                category=category,
+                items=items,
+                count=count
+                )
     return render_template(
             'items.html',
             category=category,
@@ -489,7 +496,7 @@ def allowed_file(filename):
 def newItem():
     categories = session.query(Category).all()
     items = session.query(Item).all()
-    if request.method == 'POST':
+    if request.method == 'POST' and 'username' in login_session:
         if request.form['title'] not in [item.title for item in items]:
             if (
                     request.form['category'] != 'Choose a category...'
@@ -553,11 +560,10 @@ def newItem():
                     login_session_provider=login_session['provider']
                     )
     else:
+        flash('Plese login')
         return render_template(
                 'newitem.html',
                 categories=categories,
-                user_profile_pic=login_session['picture'],
-                login_session_provider=login_session['provider']
                 )
 
 
@@ -570,7 +576,10 @@ def editItem(item_title):
             ).one()
     items = session.query(Item).all()
     categories = session.query(Category).all()
-    if request.method == 'POST':
+    if request.method == 'POST' and 'username' in login_session:
+        if edit_item.user_id != login_session['user_id']:
+            flash('Edit please only your item!')
+            return redirect(url_for('categoriesDashboard'))
         if request.form['category'] and request.form['title']:
             category_selected = session.query(Category).filter_by(
                     name=request.form['category']
