@@ -20,8 +20,11 @@ from flask import make_response
 from flask_httpauth import HTTPBasicAuth
 import requests
 
+# Images upload folders.
 UPLOAD_FOLDER = '/vagrant/item_catalog/static/item_images'
+PROFILE_UPLOAD_FOLDER = '/vagrant/item_catalog/static/profile_images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
 CLIENT_ID = json.loads(
             open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item-Catalog"
@@ -30,6 +33,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 auth = HTTPBasicAuth()
 
+# Connect to Database and create database session
 engine = create_engine('sqlite:///catalogitem.db')
 Base.metadata.bind = engine
 
@@ -38,6 +42,7 @@ DBSession = scoped_session(session_factory)
 session = DBSession()
 
 
+# Facebook third party outh connection.
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -240,6 +245,7 @@ def getUserInfo(user_id):
     return user
 
 
+# Creats a new user if is not created.
 def createUser(login_session):
     newUser = User(
             name=login_session['username'],
@@ -252,6 +258,7 @@ def createUser(login_session):
     return user.id
 
 
+# Google third party oauth disconnect.
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
@@ -276,6 +283,7 @@ def gdisconnect():
     return response
 
 
+# Catalog api reprezention.
 @app.route('/catalog.json/')
 def catalogJSON():
     categories = session.query(Category).options(
@@ -320,6 +328,7 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
+# Sign UP function if there is no third party account.
 @app.route('/signup/', methods=['GET', 'POST'])
 def signUp():
     users = session.query(User).all()
@@ -345,7 +354,7 @@ def signUp():
             image_resize = Image.open(image)
             image_resize = resizeimage.resize_contain(image_resize, [200, 200])
             image_resize.save(os.path.join(
-                app.config['UPLOAD_FOLDER'], filename
+                app.config['PROFILE_UPLOAD_FOLDER'], filename
                     ), image_resize.format)
             image_path = 'item_images/' + filename
         else:
@@ -399,6 +408,7 @@ def get_auth_token():
     return jsonify({'token': token.decode('ascii')})
 
 
+# Show all categories and last items added.
 @app.route('/')
 def categoriesDashboard():
     categories = session.query(Category).all()
@@ -422,6 +432,7 @@ def categoriesDashboard():
                 )
 
 
+# Page with particular category and its itmes.
 @app.route('/catalog/<string:category_name>/items/')
 def categoryItems(category_name):
     category = session.query(Category).filter_by(name=category_name).one()
@@ -441,6 +452,7 @@ def categoryItems(category_name):
             )
 
 
+# Item description.
 @app.route('/catalog/<string:category_name>/<string:item_title>/')
 def itemDescription(category_name, item_title):
     category = session.query(Category).filter_by(name=category_name).one()
@@ -466,11 +478,13 @@ def itemDescription(category_name, item_title):
                 )
 
 
+# Check if the file is allowed by exception.
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
+# Create new item.
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
     categories = session.query(Category).all()
@@ -547,6 +561,7 @@ def newItem():
                 )
 
 
+# Edit new item.
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
 def editItem(item_title):
     edit_item = session.query(Item).filter_by(title=item_title).one()
@@ -619,6 +634,7 @@ def editItem(item_title):
                 )
 
 
+# Delete new item.
 @app.route(
         '/catalog/<string:item_title>/delete/',
         methods=['GET', 'POST']
@@ -648,6 +664,7 @@ def deleteItem(item_title):
                 )
 
 
+# Disconnect the login session based on provider.
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
