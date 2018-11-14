@@ -289,6 +289,7 @@ def catalogJSON():
         ]))
 
 
+# Create anti-forgery state token or login.
 @app.route('/login/', methods=['GET', 'POST'])
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -324,7 +325,7 @@ def signUp():
     users = session.query(User).all()
     if 'email' in request.form and request.method == 'POST':
         email = request.form['email']
-        if request.form['email'] not in [user.email for user in users]:
+        if request.form['email'] in [user.email for user in users]:
             flash('{} is already is registred!'.format(email))
             return render_template('signup.html')
     else:
@@ -433,6 +434,8 @@ def categoryItems(category_name):
     return render_template(
             'items.html',
             category=category,
+            user_profile_pic=login_session['picture'],
+            login_session_provider=login_session['provider'],
             items=items,
             count=count
             )
@@ -456,6 +459,8 @@ def itemDescription(category_name, item_title):
     else:
         return render_template(
                 'itemdescription.html',
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider'],
                 category=category,
                 item=item
                 )
@@ -519,12 +524,27 @@ def newItem():
                 return redirect(url_for('categoriesDashboard'))
             else:
                 flash('Please, give a name and pick a category for your item!')
-                return render_template('newitem.html', categories=categories)
+                return render_template(
+                        'newitem.html',
+                        categories=categories,
+                        user_profile_pic=login_session['picture'],
+                        login_session_provider=login_session['provider']
+                        )
         else:
             flash('{} title already exists!'.format(request.form['title']))
-            return render_template('newitem.html', categories=categories)
+            return render_template(
+                    'newitem.html',
+                    categories=categories,
+                    user_profile_pic=login_session['picture'],
+                    login_session_provider=login_session['provider']
+                    )
     else:
-        return render_template('newitem.html', categories=categories)
+        return render_template(
+                'newitem.html',
+                categories=categories,
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider']
+                )
 
 
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
@@ -584,6 +604,8 @@ def editItem(item_title):
                     'edititem.html',
                     item=edit_item,
                     category_selected=category_selected,
+                    user_profile_pic=login_session['picture'],
+                    login_session_provider=login_session['provider'],
                     categories=categories
                     )
     else:
@@ -591,6 +613,8 @@ def editItem(item_title):
                 'edititem.html',
                 item=edit_item,
                 category_selected=category_selected,
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider'],
                 categories=categories
                 )
 
@@ -616,7 +640,12 @@ def deleteItem(item_title):
             ))
         return redirect(url_for('categoriesDashboard'))
     else:
-        return render_template('deleteitem.html', item=delete_item)
+        return render_template(
+                'deleteitem.html',
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider'],
+                item=delete_item
+                )
 
 
 @app.route('/disconnect')

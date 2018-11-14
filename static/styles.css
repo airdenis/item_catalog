@@ -17,7 +17,7 @@ body {
     box-shadow: 5px 5px 5px #000000;
 }
 .navbar-btn{
-    margin-top: 14px;
+    margin: 14px;
     vertical-align: middle;
 }
 
@@ -100,6 +100,10 @@ body {
     color: #000000;
 }
 
-.profile_image{
-    border-radius: 15px;
+.profile-image{
+    border-radius: 20px;
+    width: 100%;
+    max-width: 40px;
+    height: auto;
+    margin: 11px;
 }
