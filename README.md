@@ -35,6 +35,8 @@ There are some dependancies and a few instructions on how to run the application
 10. `sudo pip install passlib`
 11. `sudo pip install flask-httpauth`
 12. `sudo pip install request`
+13. `sudo pip install pillow`
+14. `sudo pip install python-resize-image`
 13. Setup application database python */item-catalog/database_setup.py*
 14. Insert fake data python */item-catalog/categories_loader.py* (inser your email address used for google or facebook account to be able to do CRUD manipulation with given data.)
 15. Run application using python */item-catalog/project.py*
