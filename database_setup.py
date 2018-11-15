@@ -30,6 +30,7 @@ class User(Base):
     email = Column(String(250), nullable=False)
     password_hash = Column(String(64))
     image = Column(String(250))
+    item = relationship('Item', cascade='all, delete-orphan')
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -61,6 +62,7 @@ class Category(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    item = relationship('Item', cascade='all, delete-orphan')
 
     @property
     def serialize(self):
@@ -81,11 +83,10 @@ class Item(Base):
     cat_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(
             Category,
-            backref='items',
-            cascade='all, delete-orphan'
+            backref='items'
             )
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User, cascade='all, delete-orphan')
+    user = relationship(User)
 
     @property
     def serialize(self):
