@@ -660,10 +660,7 @@ def newItem():
                     )
     else:
         flash('Plese login')
-        return render_template(
-                'newitem.html',
-                categories=categories,
-                )
+        return redirect(url_for('showLogin'))
 
 
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
@@ -737,14 +734,7 @@ def editItem(item_title):
                     categories=categories
                     )
     else:
-        return render_template(
-                'edititem.html',
-                item=edit_item,
-                category_selected=category_selected,
-                user_profile_pic=login_session['picture'],
-                login_session_provider=login_session['provider'],
-                categories=categories
-                )
+        return redirect(url_for('showLogin'))
 
 
 @app.route(
@@ -762,9 +752,9 @@ def deleteItem(item_title):
     if 'username' not in login_session:
         return redirect('/login')
     if delete_item.user_id != login_session['user_id']:
-        return '''<script>function myFunction() {alert('You're notauthorized
+        return '''<script>function myFunction() {alert("You're notauthorized
             to delete this item. Please create your own item in order to
-            delete.');}</script><body onload='myFunction()''>'''
+            delete.");}</script><body onload='myFunction()''>'''
     if request.method == 'POST':
         session.delete(delete_item)
         session.commit()
