@@ -79,9 +79,13 @@ class Item(Base):
     image = Column(String(250))
     init_time = Column(DateTime, default=func.now())
     cat_id = Column(Integer, ForeignKey('category.id'))
-    category = relationship(Category, backref='items')
+    category = relationship(
+            Category,
+            backref='items',
+            cascade='all, delete-orphan'
+            )
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    user = relationship(User, cascade='all, delete-orphan')
 
     @property
     def serialize(self):
