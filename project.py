@@ -42,9 +42,11 @@ DBSession = scoped_session(session_factory)
 session = DBSession()
 
 
-# Facebook third party outh connection.
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
+    """
+        Facebook third party outh connection.
+    """
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
@@ -65,8 +67,10 @@ def fbconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
-    # Use token to get user info from API
-    # userinfo_url = "https://graph.facebook.com/v2.8/me"
+    """
+        Use token to get user info from API
+        userinfo_url = "https://graph.facebook.com/v2.8/me"
+    """
     token = result.split(',')[0].split(':')[1].replace('"', '')
     url = (
             'https://graph.facebook.com/v2.8/me?'
@@ -75,22 +79,28 @@ def fbconnect():
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    # print "url sent for API access:%s"% url
-    # print "API JSON result: %s" % result
+    """
+        print "url sent for API access:%s"% url
+        print "API JSON result: %s" % result
+    """
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
     login_session['email'] = data["email"]
     login_session['facebook_id'] = data["id"]
 
-    # The token must be stored in the login_session in order to properly logout
     login_session['access_token'] = token
-
-    # Get user picture
+    """
+        The token must be stored in the login_session in
+        order to properly logout
+    """
     url = (
             'https://graph.facebook.com/v2.8/me/picture?'
             'access_token={}&redirect=0&height=200&width=200'
             ).format(token)
+    """
+        Get user picture
+    """
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
@@ -98,11 +108,13 @@ def fbconnect():
 
     login_session['picture'] = data["data"]["url"]
 
-    # see if user exists
     user_id = getUserId(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+    """
+        see if user exists
+    """
 
     output = ''
     output += '<h1>Welcome, '
@@ -124,7 +136,6 @@ def fbconnect():
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
-    # The access token must me included to successfully logout
     access_token = login_session['access_token']
     url = 'https://graph.facebook.com/{}/permissions?access_token={}'.format(
             facebook_id,
@@ -132,52 +143,68 @@ def fbdisconnect():
             )
     h = httplib2.Http()
     h.request(url, 'DELETE')[1]
+    """
+        The access token must me included to successfully logout
+    """
     return "you have been logged out"
 
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
-    # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    # Obtain authorization code
+    """
+        Validate state token
+    """
     code = request.data
-
+    """
+        Obtain authorization code
+    """
     try:
-        # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
+        """
+            Upgrade the authorization code into a credentials object
+        """
     except FlowExchangeError:
         response = make_response(
             json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Check that the access token is valid.
     access_token = credentials.access_token
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
+    """
+        Check that the access token is valid.
+    """
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
-    # If there was an error in the access token info, abort.
     if result.get('error') is not None:
+        """
+            If there was an error in the access token info, abort.
+        """
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
+        """
+            Verify that the access token is used for the intended user.
+        """
         response = make_response(
             json.dumps("Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is valid for this app.
     if result['issued_to'] != CLIENT_ID:
+        """
+            Verify that the access token is valid for this app.
+        """
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
         print "Token's client ID does not match app's."
@@ -193,11 +220,12 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Store the access token in the session for later use.
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
+    """
+        Store the access token in the session for later use.
+    """
 
-    # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
@@ -208,7 +236,9 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
-    print data['name']
+    """
+        Get user info
+    """
 
     user_id = getUserId(login_session['email'])
     if not user_id:
@@ -232,6 +262,12 @@ def gconnect():
 
 
 def getUserId(email):
+    """
+        Get user id using request filter by email.
+
+        argument:
+            email
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -240,6 +276,12 @@ def getUserId(email):
 
 
 def getUserInfo(user_id):
+    """
+        Get user info using user id.
+
+        argument:
+            user id
+    """
     print user_id
     user = session.query(User).filter_by(id=user_id).one()
     return user
@@ -247,6 +289,12 @@ def getUserInfo(user_id):
 
 # Creats a new user if is not created.
 def createUser(login_session):
+    """
+        Store a user in database.
+
+        argumment:
+            login_session
+    """
     newUser = User(
             name=login_session['username'],
             email=login_session['email'],
@@ -258,10 +306,12 @@ def createUser(login_session):
     return user.id
 
 
-# Google third party oauth disconnect.
 @app.route('/gdisconnect')
 def gdisconnect():
-    # Only disconnect a connected user.
+    """
+        Google third party oauth disconnect.
+        Only disconnect a connected user.
+    """
     access_token = login_session.get('access_token')
     if access_token is None:
         response = make_response(
@@ -283,9 +333,12 @@ def gdisconnect():
     return response
 
 
-# Catalog api reprezention.
 @app.route('/catalog.json/')
 def catalogJSON():
+    """
+        Creates a JSON reprezention of catalog and
+        its categories and their items in  detail.
+    """
     categories = session.query(Category).options(
             joinedload(Category.items)
             ).all()
@@ -299,6 +352,10 @@ def catalogJSON():
 
 @app.route('/catalog/<path:category_name>/items/JSON')
 def categoryItemsJSON(category_name):
+    """
+        Creates a JSON reprezention of specific category
+        and its items.
+    """
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(category=category).all()
     return jsonify(items=[i.serialize for i in items])
@@ -306,6 +363,9 @@ def categoryItemsJSON(category_name):
 
 @app.route('/catalog/<path:category_name>/<path:item_title>/JSON')
 def ItemJSON(category_name, item_title):
+    """
+        Creates a JSON reprezention of specific item.
+    """
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item).filter_by(
             title=item_title,
@@ -314,9 +374,11 @@ def ItemJSON(category_name, item_title):
     return jsonify(item=[item.serialize])
 
 
-# Create anti-forgery state token or login.
 @app.route('/login/', methods=['GET', 'POST'])
 def showLogin():
+    """
+        Create anti-forgery state token or login.
+    """
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     print state
@@ -345,9 +407,12 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
-# Sign UP function if there is no third party account.
 @app.route('/signup/', methods=['GET', 'POST'])
 def signUp():
+    """
+        Sign UP function if there is no third party account.
+        Stores the credentials in database.
+    """
     users = session.query(User).all()
     if 'email' in request.form and request.method == 'POST':
         email = request.form['email']
@@ -425,9 +490,11 @@ def get_auth_token():
     return jsonify({'token': token.decode('ascii')})
 
 
-# Show all categories and last items added.
 @app.route('/')
 def categoriesDashboard():
+    """
+        Show all categories and last items added.
+    """
     categories = session.query(Category).all()
     count = session.query(Category).count()
     items = session.query(Item).order_by(desc('init_time')).limit(count).all()
@@ -449,9 +516,14 @@ def categoriesDashboard():
                 )
 
 
-# Page with particular category and its itmes.
 @app.route('/catalog/<string:category_name>/items/')
 def categoryItems(category_name):
+    """
+    Page with particular category and its itmes.
+
+    argument:
+        category name
+    """
     category = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(
             cat_id=category.id
@@ -476,9 +548,14 @@ def categoryItems(category_name):
             )
 
 
-# Item description.
 @app.route('/catalog/<string:category_name>/<string:item_title>/')
 def itemDescription(category_name, item_title):
+    """
+        Gives item description.
+
+        arguments:
+            category name, item title
+    """
     category = session.query(Category).filter_by(name=category_name).one()
     item = session.query(Item).filter_by(
             title=item_title,
@@ -502,15 +579,20 @@ def itemDescription(category_name, item_title):
                 )
 
 
-# Check if the file is allowed by exception.
 def allowed_file(filename):
+    """
+        Check if the file is allowed by exception.
+        Checks ALLOWED_EXTENSIONS
+    """
     return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# Create new item.
 @app.route('/catalog/new/', methods=['GET', 'POST'])
 def newItem():
+    """
+        Create new item and store it in database.
+    """
     categories = session.query(Category).all()
     items = session.query(Item).all()
     if request.method == 'POST' and 'username' in login_session:
@@ -584,9 +666,14 @@ def newItem():
                 )
 
 
-# Edit new item.
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
 def editItem(item_title):
+    """
+        Edit new item and store changes in database.
+
+        argument:
+            item title
+    """
     edit_item = session.query(Item).filter_by(title=item_title).one()
     category_selected = session.query(Category).filter_by(
             id=edit_item.cat_id
@@ -660,12 +747,17 @@ def editItem(item_title):
                 )
 
 
-# Delete new item.
 @app.route(
         '/catalog/<string:item_title>/delete/',
         methods=['GET', 'POST']
         )
 def deleteItem(item_title):
+    """
+        Delete item from database and return back to dashboard.
+
+        argument:
+            item title
+    """
     delete_item = session.query(Item).filter_by(title=item_title).one()
     if 'username' not in login_session:
         return redirect('/login')
@@ -690,9 +782,11 @@ def deleteItem(item_title):
                 )
 
 
-# Disconnect the login session based on provider.
 @app.route('/disconnect')
 def disconnect():
+    """
+        Disconnect the login session based on provider.
+    """
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
             gdisconnect()
