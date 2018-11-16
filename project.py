@@ -1,7 +1,13 @@
 import os
 from PIL import Image
 from flask import (
-        Flask, render_template, redirect, request, url_for, flash, jsonify, g
+        Flask,
+        render_template,
+        redirect, request,
+        url_for,
+        flash,
+        jsonify,
+        g
         )
 from resizeimage import resizeimage
 from werkzeug.utils import secure_filename
@@ -23,7 +29,7 @@ import requests
 # Images upload folders.
 UPLOAD_FOLDER = '/vagrant/item_catalog/static/item_images'
 PROFILE_UPLOAD_FOLDER = '/vagrant/item_catalog/static/profile_images'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 CLIENT_ID = json.loads(
             open('client_secrets.json', 'r').read())['web']['client_id']
@@ -436,7 +442,7 @@ def signUp():
             image_resize = Image.open(image)
             image_resize = resizeimage.resize_contain(image_resize, [200, 200])
             image_resize.save(os.path.join(
-                app.config['PROFILE_UPLOAD_FOLDER'], filename
+                app.config['UPLOAD_FOLDER'], filename
                     ), image_resize.format)
             image_path = 'item_images/' + filename
         else:
@@ -593,9 +599,15 @@ def newItem():
     """
         Create new item and store it in database.
     """
+    if 'username' not in login_session:
+        flash('Please log in')
+        return redirect(url_for('showLogin'))
     categories = session.query(Category).all()
     items = session.query(Item).all()
-    if request.method == 'POST' and 'username' in login_session:
+    if request.method == 'POST':
+        if 'username' not in login_session:
+            flash('Please log in')
+            return redirect(url_for('showLogin'))
         if request.form['title'] not in [item.title for item in items]:
             if (
                     request.form['category'] != 'Choose a category...'
@@ -659,8 +671,12 @@ def newItem():
                     login_session_provider=login_session['provider']
                     )
     else:
-        flash('Plese login')
-        return redirect(url_for('showLogin'))
+        return render_template(
+                'newitem.html',
+                categories=categories,
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider']
+                )
 
 
 @app.route('/catalog/<string:item_title>/edit', methods=['GET', 'POST'])
@@ -677,10 +693,13 @@ def editItem(item_title):
             ).one()
     items = session.query(Item).all()
     categories = session.query(Category).all()
-    if request.method == 'POST' and 'username' in login_session:
-        if edit_item.user_id != login_session['user_id']:
-            flash('Edit please only your item!')
-            return redirect(url_for('categoriesDashboard'))
+    if 'username' not in login_session:
+        flash('Please log in')
+        return redirect(url_for('showLogin'))
+    if edit_item.user_id != login_session['user_id']:
+        flash('Please edit only your items!')
+        return redirect(url_for('categoriesDashboard'))
+    if request.method == 'POST':
         if request.form['category'] and request.form['title']:
             category_selected = session.query(Category).filter_by(
                     name=request.form['category']
@@ -734,7 +753,14 @@ def editItem(item_title):
                     categories=categories
                     )
     else:
-        return redirect(url_for('showLogin'))
+        return render_template(
+                'edititem.html',
+                item=edit_item,
+                category_selected=category_selected,
+                user_profile_pic=login_session['picture'],
+                login_session_provider=login_session['provider'],
+                categories=categories
+                )
 
 
 @app.route(
@@ -750,11 +776,12 @@ def deleteItem(item_title):
     """
     delete_item = session.query(Item).filter_by(title=item_title).one()
     if 'username' not in login_session:
+        flash('Please log in to delete your item')
         return redirect('/login')
     if delete_item.user_id != login_session['user_id']:
-        return '''<script>function myFunction() {alert("You're notauthorized
-            to delete this item. Please create your own item in order to
-            delete.");}</script><body onload='myFunction()''>'''
+        return '''<script>function myFunction() {alert("You're not authorized\
+            to delete this item. Please create your own item in order to\
+            delete.");}</script><body onload='myFunction()'>'''
     if request.method == 'POST':
         session.delete(delete_item)
         session.commit()
